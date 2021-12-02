@@ -1,1 +1,2 @@
-# rest-referral
+# referral-program
+Referral Program REST API
