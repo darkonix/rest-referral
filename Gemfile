@@ -20,9 +20,14 @@ gem 'jbuilder', '~> 2.7'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.7'
 
 gem 'grape'
+gem 'grape-entity'
+gem 'grape-entity-matchers'
+gem 'grape-swagger'
+gem 'grape-swagger-ui'
+gem 'grape-swagger-entity'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -37,8 +42,9 @@ end
 
 group :development, :test do
   gem 'rspec-rails', '~> 5.0.0'
-  gem "factory_bot_rails"
-  gem "faker"
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'database_cleaner'
 end
 
 group :development do
