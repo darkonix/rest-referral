@@ -100,7 +100,7 @@ module ReferralProgram
 						tags ['Users']
 					end
 					delete do
-						User.find(params[:id]).delete
+						User.find(params[:id]).destroy
 						{ messages: ['User deleted succesfully'] }
 					end
 
