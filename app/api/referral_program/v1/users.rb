@@ -12,8 +12,8 @@ module ReferralProgram
 					tags ['Users']
 				end
 				get do
-          users = User.all
-          { users: ReferralProgram::Entities::User.represent(users).as_json }
+					users = User.all
+					{ users: ReferralProgram::Entities::User.represent(users).as_json }
 				end
 
 				#  post /api/v1/users
@@ -36,7 +36,7 @@ module ReferralProgram
 				end
 				post do
 					user = User.create!(declared(params))
-          { user: ReferralProgram::Entities::User.represent(user).as_json }
+					{ user: ReferralProgram::Entities::User.represent(user).as_json }
 				end
 
 				route_param :id, type: Integer do
