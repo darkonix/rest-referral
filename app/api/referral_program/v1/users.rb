@@ -183,6 +183,10 @@ module ReferralProgram
 						created_user = User.find!(params[:user_id])
 						referral = Referral.find_by!(code: params[:ref])
 
+						if (referral.nil?)
+							raise ActiveRecord::RecordNotFound.new "Referral not found"
+						end
+
 						if (created_user.referee_id.present?)
 							raise StandardError.new "This referral was already triggered for this user"
 						end
