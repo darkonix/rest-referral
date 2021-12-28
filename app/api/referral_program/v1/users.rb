@@ -169,18 +169,18 @@ module ReferralProgram
 						requires :user_id, type: Integer, allow_blank: false
 					end
 					post 'trigger' do
+						created_user = User.find(params[:user_id])
+						referral = Referral.find_by(code: params[:ref])
+
+						if (referral.nil?)
+							raise ActiveRecord::RecordNotFound.new "Referral not found"
+						end
+
+						if (created_user.referee_id.present?)
+							raise StandardError.new "This referral was already triggered for this user"
+						end
+
 						ActiveRecord::Base.transaction do
-							created_user = User.find(params[:user_id])
-							referral = Referral.find_by(code: params[:ref])
-
-							if (referral.nil?)
-								raise ActiveRecord::RecordNotFound.new "Referral not found"
-							end
-
-							if (created_user.referee_id.present?)
-								raise StandardError.new "This referral was already triggered for this user"
-							end
-
 							created_user.increment!(:balance, 10)
 							created_user.update!(referee_id: referral.user.id)
 
