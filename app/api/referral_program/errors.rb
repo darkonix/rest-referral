@@ -11,6 +11,10 @@ module ReferralProgram
 				error!({ messages: ['Record Not Found'] }, 404)
 			end
 
+			rescue_from JWT::VerificationError, JWT::DecodeError do |e|
+				error!({ messages: ['Not Authenticated'] }, 401)
+			end
+
 			rescue_from :all do |e|
 				error!({ messages: [e.message] }, 500)
 			end

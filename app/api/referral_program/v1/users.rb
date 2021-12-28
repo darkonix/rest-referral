@@ -117,7 +117,7 @@ module ReferralProgram
 						get do
 							user = User.find(params[:id])
 							referrals = user.referrals
-		          { referrals: ReferralProgram::Entities::Referral.represent(referrals).as_json }
+							{ referrals: ReferralProgram::Entities::Referral.represent(referrals).as_json }
 						end
 
 						# post /api/v1/users/:id/referrals
@@ -131,8 +131,8 @@ module ReferralProgram
 						end
 						post do
 							user = User.find(params[:id])
-							user.referrals.create()
-							{ user: ReferralProgram::Entities::User.represent(user).as_json, messages: ['Referral created succesfully']}
+							referral = user.referrals.create()
+							{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json, messages: ['Referral created succesfully']}
 						end
 
 						route_param :ref do
@@ -165,7 +165,7 @@ module ReferralProgram
 								if (referral.signups % 5 == 0)
 									referral.user.increment!(:balance, 10)
 								end
-								{ user: ReferralProgram::Entities::User.represent(referral.user).as_json, messages: ['Referral triggered succesfully']}
+								{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json, messages: ['Referral triggered succesfully']}
 							end
 
 							# delete /api/v1/users/:id/referrals/:ref

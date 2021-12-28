@@ -26,5 +26,5 @@ class User < ApplicationRecord
 						format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
 	validates :password, length: {minimum: 8, maximum: 20}, presence: true, password: true
 
-	# validates_associated :referrals
+	validates_associated :referrals
 end

@@ -22,12 +22,15 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
+gem 'jwt'
 gem 'grape'
 gem 'grape-entity'
 gem 'grape-entity-matchers'
 gem 'grape-swagger'
 gem 'grape-swagger-ui'
 gem 'grape-swagger-entity'
+gem 'doorkeeper', '~> 2.2.2'
+gem 'wine_bouncer'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
