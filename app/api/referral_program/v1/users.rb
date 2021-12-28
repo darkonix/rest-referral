@@ -9,7 +9,6 @@ module ReferralProgram
 					success ReferralProgram::Entities::User
 					is_array true
 					produces ['application/json']
-					tags ['Users']
 				end
 				get do
 					users = User.all
@@ -24,7 +23,6 @@ module ReferralProgram
 					is_array false
 					produces ['application/json']
 					consumes ['application/json']
-					tags ['Users']
 				end
 				params do
 					requires :name, type: String, allow_blank: false
@@ -47,7 +45,6 @@ module ReferralProgram
 						success ReferralProgram::Entities::User
 						is_array false
 						produces ['application/json']
-						tags ['Users']
 					end
 					get do
 						user = User.find(params[:id])
@@ -59,7 +56,6 @@ module ReferralProgram
 						summary 'Get user\'s balance'
 						is_array false
 						produces ['application/json']
-						tags ['Users']
 					end
 					get 'balance' do
 						user = User.find(params[:id])
@@ -74,7 +70,6 @@ module ReferralProgram
 						is_array false
 						consumes ['application/json']
 						produces ['application/json']
-						tags ['Users']
 					end
 					params do
 						requires :name, type: String, allow_blank: false
@@ -96,7 +91,6 @@ module ReferralProgram
 						success ReferralProgram::Entities::User
 						is_array false
 						produces ['application/json']
-						tags ['Users']
 					end
 					delete do
 						User.find(params[:id]).destroy
@@ -111,7 +105,6 @@ module ReferralProgram
 							success ReferralProgram::Entities::Referral
 							is_array true
 							produces ['application/json']
-							tags ['Referrals']
 						end
 						get do
 							user = User.find(params[:id])
@@ -126,7 +119,6 @@ module ReferralProgram
 							success ReferralProgram::Entities::Referral
 							is_array false
 							produces ['application/json']
-							tags ['Referrals']
 						end
 						post do
 							user = User.find(params[:id])
@@ -141,7 +133,6 @@ module ReferralProgram
 							success ReferralProgram::Entities::Referral
 							is_array false
 							produces ['application/json']
-							tags ['Referrals']
 						end
 						delete do
 							Referral.find(params[:id]).delete
@@ -160,7 +151,6 @@ module ReferralProgram
 						success ReferralProgram::Entities::Referral
 						is_array false
 						produces ['application/json']
-						tags ['Referrals']
 					end
 					get do
 						referral = Referral.where(code: params[:ref]).first
@@ -174,24 +164,23 @@ module ReferralProgram
 						success ReferralProgram::Entities::Referral
 						is_array false
 						produces ['application/json']
-						tags ['Referrals']
 					end
 					params do
 						requires :user_id, type: Integer, allow_blank: false
 					end
 					post 'trigger' do
-						created_user = User.find!(params[:user_id])
-						referral = Referral.find_by!(code: params[:ref])
-
-						if (referral.nil?)
-							raise ActiveRecord::RecordNotFound.new "Referral not found"
-						end
-
-						if (created_user.referee_id.present?)
-							raise StandardError.new "This referral was already triggered for this user"
-						end
-
 						ActiveRecord::Base.transaction do
+							created_user = User.find(params[:user_id])
+							referral = Referral.find_by(code: params[:ref])
+
+							if (referral.nil?)
+								raise ActiveRecord::RecordNotFound.new "Referral not found"
+							end
+
+							if (created_user.referee_id.present?)
+								raise StandardError.new "This referral was already triggered for this user"
+							end
+
 							created_user.increment!(:balance, 10)
 							created_user.update!(referee_id: referral.user.id)
 
