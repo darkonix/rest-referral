@@ -180,8 +180,8 @@ module ReferralProgram
 						requires :user_id, type: Integer, allow_blank: false
 					end
 					post 'trigger' do
-						created_user = User.find(params[:user_id])
-						referral = Referral.find_by(code: params[:ref])
+						created_user = User.find!(params[:user_id])
+						referral = Referral.find_by!(code: params[:ref])
 
 						if (created_user.referee_id.present?)
 							raise StandardError.new "This referral was already triggered for this user"
