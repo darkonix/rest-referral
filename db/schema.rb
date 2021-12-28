@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_03_171936) do
+ActiveRecord::Schema.define(version: 2021_12_28_203339) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,8 +31,10 @@ ActiveRecord::Schema.define(version: 2021_12_03_171936) do
     t.decimal "balance"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "referee_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "referrals", "users"
+  add_foreign_key "users", "users", column: "referee_id"
 end

@@ -17,6 +17,7 @@ end
 
 class User < ApplicationRecord
 	has_many :referrals, dependent: :destroy
+	has_one :user, foreign_key: "referee_id"
 	has_secure_password
 
 	attribute :balance, :decimal, default: 0.0
@@ -24,7 +25,7 @@ class User < ApplicationRecord
 	validates :name, length: {maximum: 100}, presence: true
 	validates :email, length: {maximum: 255}, presence: true, uniqueness: { case_sensitive: false }, 
 						format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
-	validates :password, length: {minimum: 8, maximum: 20}, presence: true, password: true
+	validates :password, length: {minimum: 8, maximum: 20}, presence: true, password: true, if: :password
 
 	validates_associated :referrals
 end

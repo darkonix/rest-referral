@@ -4,6 +4,7 @@ module ReferralProgram
             expose :id
             expose :name
             expose :email
+            expose :referee_id
         end
     end
 end

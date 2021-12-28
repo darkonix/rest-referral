@@ -82,7 +82,6 @@ module ReferralProgram
 						requires :password, type: String, allow_blank: false
 						requires :password_confirmation, type: String, allow_blank: false, same_as: :password
 						optional :balance, type: Float
-						# optional :referrals, type: Set[Referral]
 					end
 					put do
 						user = User.find(params[:id])
@@ -135,53 +134,70 @@ module ReferralProgram
 							{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json, messages: ['Referral created succesfully']}
 						end
 
-						route_param :ref do
-							# get /api/v1/users/:id/referrals/:ref
-							desc 'Get specific referral' do
-								summary 'Get specific referral'
-								params  ReferralProgram::Entities::Referral.documentation
-								success ReferralProgram::Entities::Referral
-								is_array false
-								produces ['application/json']
-								tags ['Referrals']
-							end
-							get do
-								referral = Referral.find(params[:ref])
-								{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json }
-							end
+						# delete /api/v1/users/:id/referrals/:ref
+						desc 'Delete a referral' do
+							summary 'Delete a referral'
+							params  ReferralProgram::Entities::Referral.documentation
+							success ReferralProgram::Entities::Referral
+							is_array false
+							produces ['application/json']
+							tags ['Referrals']
+						end
+						delete do
+							Referral.find(params[:id]).delete
+							{ messages: ['Referral deleted succesfully'] }
+						end
+					end
+				end
+			end
 
-							# post /api/v1/users/:id/referrals/:ref/trigger
-							desc 'Trigger a referral' do
-								summary 'Trigger a referral'
-								params  ReferralProgram::Entities::Referral.documentation
-								success ReferralProgram::Entities::Referral
-								is_array false
-								produces ['application/json']
-								tags ['Referrals']
-							end
-							post 'trigger' do
-								referral = Referral.find(params[:ref])
-								referral.increment!(:signups)
-								if (referral.signups % 5 == 0)
-									referral.user.increment!(:balance, 10)
-								end
-								{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json, messages: ['Referral triggered succesfully']}
-							end
+			resources :referrals do
+				route_param :ref do
+					# get /api/v1/referrals/:ref
+					desc 'Get specific referral' do
+						summary 'Get specific referral'
+						params  ReferralProgram::Entities::Referral.documentation
+						success ReferralProgram::Entities::Referral
+						is_array false
+						produces ['application/json']
+						tags ['Referrals']
+					end
+					get do
+						referral = Referral.where(code: params[:ref]).first
+						{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json }
+					end
 
-							# delete /api/v1/users/:id/referrals/:ref
-							desc 'Delete a referral' do
-								summary 'Delete a referral'
-								params  ReferralProgram::Entities::Referral.documentation
-								success ReferralProgram::Entities::Referral
-								is_array false
-								produces ['application/json']
-								tags ['Referrals']
-							end
-							delete do
-								Referral.find(params[:id]).delete
-								{ messages: ['Referral deleted succesfully'] }
+					# post /api/v1/referrals/:ref/trigger
+					desc 'Trigger a referral' do
+						summary 'Trigger a referral'
+						params  ReferralProgram::Entities::Referral.documentation
+						success ReferralProgram::Entities::Referral
+						is_array false
+						produces ['application/json']
+						tags ['Referrals']
+					end
+					params do
+						requires :user_id, type: Integer, allow_blank: false
+					end
+					post 'trigger' do
+						created_user = User.find(params[:user_id])
+						referral = Referral.find_by(code: params[:ref])
+
+						if (created_user.referee_id.present?)
+							raise StandardError.new "This referral was already triggered for this user"
+						end
+
+						ActiveRecord::Base.transaction do
+							created_user.increment!(:balance, 10)
+							created_user.update!(referee_id: referral.user.id)
+
+							referral.increment!(:signups)
+							if (referral.signups % 5 == 0)
+								referral.user.increment!(:balance, 10)
 							end
 						end
+
+						{ referral: ReferralProgram::Entities::Referral.represent(referral).as_json, messages: ['Referral triggered succesfully'] }
 					end
 				end
 			end

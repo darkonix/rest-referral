@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe "get an user's specific referral route", :type => :request do
+describe "get a specific referral route", :type => :request do
 	let!(:user) { create(:user) }
 	let!(:referral) do
 		post "/api/v1/users/#{user.id}/referrals", params: {}, headers: { 'AUTHORIZATION' => "Bearer " + Rails.application.credentials.auth0[:token] }
@@ -8,7 +8,7 @@ describe "get an user's specific referral route", :type => :request do
 	end
 
 	before do
-		get "/api/v1/users/#{user.id}/referrals/#{referral['id']}", params: {}, headers: { 'AUTHORIZATION' => "Bearer " + Rails.application.credentials.auth0[:token] }
+		get "/api/v1/referrals/#{referral['code']}", params: {}, headers: { 'AUTHORIZATION' => "Bearer " + Rails.application.credentials.auth0[:token] }
 	end
 
 	it 'should return the referral\'s code' do
