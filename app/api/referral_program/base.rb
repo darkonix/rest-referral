@@ -63,6 +63,10 @@ module ReferralProgram
 				contact_name: "Mycke Ramos",
 				contact_email: "mycke.ram@gmail.com",
 			},
+			models: [
+				ReferralProgram::Entities::User,
+				ReferralProgram::Entities::Referral
+			],
 			tags: [
 				{ name: 'Users', description: 'Operations regarding users' },
 				{ name: 'Referrals', description: 'Operations regarding the referrals of an user' },

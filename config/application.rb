@@ -18,13 +18,5 @@ module AmitreeReferralProgram
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-
-    config.middleware.insert_before 0, Rack::Cors do
-      # Permit CORS from any origin, only in the API route
-      allow do
-        origins '*'
-        resource '/api/*', headers: :any
-      end
-    end
   end
 end
