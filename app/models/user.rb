@@ -17,7 +17,6 @@ end
 
 class User < ApplicationRecord
 	has_many :referrals, dependent: :destroy
-	has_secure_password
 
 	attribute :balance, :decimal, default: 0.0
 
